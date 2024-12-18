@@ -1,8 +1,8 @@
-- name: Configuration de base du serveur Vagrant
+- name: Configuration de base du serveur VPS
   hosts: all
   become: yes
   tasks:
-    - name: Mettre à jour les paquets du serveur
+    - name: Mettre à jour les paquets
       apt:
         update_cache: yes
         upgrade: dist
@@ -15,12 +15,21 @@
           - ufw
         state: present
 
-    - name: Configurer le pare-feu UFW pour autoriser le SSH
+    - name: Installer Docker
+      shell: |
+        curl -fsSL https://get.docker.com | sh
+        systemctl start docker
+        systemctl enable docker
+
+    - name: Configurer UFW pour autoriser le port 22 (SSH) et 3000
       ufw:
         rule: allow
-        port: '22'
+        port: "{{ item }}"
         proto: tcp
+      loop:
+        - 22
+        - 3000
 
-    - name: Activer le pare-feu UFW
+    - name: Activer UFW
       ufw:
         state: enabled
