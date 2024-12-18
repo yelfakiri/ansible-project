@@ -2,6 +2,12 @@
   hosts: all
   become: yes
   tasks:
+    - name: Synchroniser le dossier rep_synch (macine_local) vers "/home/younes" (machine_distante)
+      synchronize:
+        src: /Users/yelfakiri/Project/Docker/mon_projet_siem           # Dossier local à synchroniser
+        dest: /home/                # Chemin distant
+        archive: yes              
+  
     - name: Mettre à jour les paquets
       apt:
         update_cache: yes
@@ -21,15 +27,29 @@
         systemctl start docker
         systemctl enable docker
 
-    - name: Configurer UFW pour autoriser le port 22 (SSH) et 3000
+    - name: Configurer UFW pour autorisation de ports
       ufw:
         rule: allow
         port: "{{ item }}"
         proto: tcp
       loop:
         - 22
-        - 3000
+        - 5601
+        - 9200
+        - 9300
+        - 80
+        - 443
 
     - name: Activer UFW
       ufw:
         state: enabled
+
+    - name: Lancer le docker-compose dans le répertoire spécifié
+      shell: docker compose up -d
+      args:
+        chdir: /home/mon_projet_siem/   # Se place directement dans le répertoire avant d'exécuter les commandes
+      register: docker_output
+
+    - name: Afficher la sortie du déploiement
+      debug:
+        var: docker_output.stdout
