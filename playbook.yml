@@ -1,0 +1,26 @@
+- name: Configuration de base du serveur Vagrant
+  hosts: all
+  become: yes
+  tasks:
+    - name: Mettre à jour les paquets du serveur
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Installer des paquets essentiels
+      apt:
+        name:
+          - curl
+          - git
+          - ufw
+        state: present
+
+    - name: Configurer le pare-feu UFW pour autoriser le SSH
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Activer le pare-feu UFW
+      ufw:
+        state: enabled
