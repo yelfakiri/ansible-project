@@ -1,0 +1,9 @@
+- import_playbook: playbooks/update.yml
+- import_playbook: playbooks/install-python.yml
+- import_playbook: playbooks/install-curl.yml
+- import_playbook: playbooks/install-ufw.yml
+- import_playbook: playbooks/install-git.yml
+- import_playbook: playbooks/install-docker-grafana.yml
+- import_playbook: playbooks/install-docker-juiceshop.yml
+- import_playbook: playbooks/install-nginx-vps.yml
+- import_playbook: playbooks/install-nginx-vagrant.yml

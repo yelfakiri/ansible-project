@@ -1,0 +1,35 @@
+- name: Installer docker et configuration
+  hosts: MACHINE_VAGRANT
+  become: yes
+  tasks:
+    - name: Installer Docker
+      shell: |
+        curl -fsSL https://get.docker.com | sh
+        systemctl start docker
+        systemctl enable docker
+
+    # Étape 1 : Créer un répertoire nommé "docker" dans /home/ubuntu/
+    - name: Créer le répertoire /home/ubuntu/docker
+      file:
+        path: /home/ubuntu/docker
+        state: directory
+        mode: '0755'
+
+    # Étape 2 : Synchroniser le dossier "juice-shop" vers "/home/ubuntu/docker"
+    - name: Synchroniser le dossier juice-shop
+      synchronize:
+        src: /Users/yelfakiri/Project/Docker/juiceshop-example
+        dest: /home/ubuntu/docker/
+        archive: yes
+
+    # Étape 3 : Lancer le docker-compose dans le répertoire /home/ubuntu/docker
+    - name: Lancer le docker-compose
+      shell: docker compose up -d
+      args:
+        chdir: /home/ubuntu/docker/juiceshop-example
+      register: docker_output
+
+    # Étape 4 : Vérifier la sortie de la commande docker-compose
+    - name: Afficher la sortie du docker-compose
+      debug:
+        var: docker_output.stdout

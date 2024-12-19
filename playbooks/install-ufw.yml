@@ -1,0 +1,20 @@
+- name: Installer ufw et configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installer ufw
+      apt:
+        name:
+          - ufw
+        state: present
+    - name: Configurer UFW pour autorisation de ports
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - 22 # autorise le port 22 SSH
+        - 80 # autorise le port 80 HTTP
+    - name: Activer UFW
+      ufw:
+        state: enabled

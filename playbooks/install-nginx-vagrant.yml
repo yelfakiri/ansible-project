@@ -1,0 +1,36 @@
+- name: Installer git et
+  hosts: MACHINE_VAGRANT
+  become: yes
+  tasks:
+    - name: Installer Nginx
+      apt:
+        name: nginx
+        state: present
+
+    # Activer et démarrer Nginx
+    - name: Activer et démarrer le service Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    # Ajouter une configuration personnalisée
+    - name: Copier le fichier de configuration Nginx
+      copy:
+        src: /Users/yelfakiri/Project/Ansible/ansible-project/conf-nginx-juiceshop  # Remplace par le chemin de ta configuration locale
+        dest: /etc/nginx/sites-available/grafana # Destination sur le serveur
+
+    # Créer un lien symbolique pour activer la configuration
+    - name: Créer un lien symbolique pour la configuration Grafana
+      file:
+        src: /etc/nginx/sites-available/grafana
+        dest: /etc/nginx/sites-enabled/grafana
+        state: link
+      notify:
+        - Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded

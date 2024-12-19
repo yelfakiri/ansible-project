@@ -1,0 +1,9 @@
+- name: Installer git
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installer git
+      apt:
+        name:
+          - git
+        state: present
