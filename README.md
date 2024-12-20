@@ -1,4 +1,4 @@
-# Projet Ansible : Déploiement de JuiceShop et Grafana avec Nginx
+# Projet Ansible : Déploiement de JuiceShop et Grafana
 
 Ce projet Ansible a pour objectif de déployer des applications et de configurer un serveur **Nginx** sur deux environnements distincts : 
 
