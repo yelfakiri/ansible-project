@@ -25,30 +25,45 @@
         name: nginx
         state: reloaded
 
-# Configuration de nginx sur la machine VPS
-- name: Configuration de nginx sur la machine Vagrant
+# Configuration de nginx sur la machine VPS (Red Hat/CentOS)
+- name: Configuration de nginx sur la machine VPS
   hosts: MACHINE_VPS
   become: yes
   tasks:
+    # Créer les répertoires nécessaires pour les fichiers de configuration
+    - name: Créer le répertoire /etc/nginx/sites-available
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+        mode: '0755'
 
-      # Ajouter une configuration personnalisée
+    - name: Créer le répertoire /etc/nginx/sites-enabled
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+        mode: '0755'
+
+    # Ajouter une configuration personnalisée
     - name: Copier le fichier de configuration Nginx
       copy:
         src: /Users/yelfakiri/Project/Ansible/ansible-project/conf-nginx-juiceshop  # Remplace par le chemin de ta configuration locale
-        dest: /etc/nginx/sites-available/grafana # Destination sur le serveur
+        dest: /etc/nginx/sites-available/juiceshop # Destination sur le serveur
 
     # Créer un lien symbolique pour activer la configuration
-    - name: Créer un lien symbolique pour la configuration Grafana
+    - name: Créer un lien symbolique pour la configuration JuiceShop
       file:
-        src: /etc/nginx/sites-available/grafana
-        dest: /etc/nginx/sites-enabled/grafana
+        src: /etc/nginx/sites-available/juiceshop
+        dest: /etc/nginx/sites-enabled/juiceshop
         state: link
       notify:
         - Reload Nginx
+
+    # Vérifier la syntaxe de Nginx
+    - name: Vérifier la configuration Nginx
+      command: nginx -t
 
   handlers:
     - name: Reload Nginx
       service:
         name: nginx
         state: reloaded
-

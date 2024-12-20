@@ -2,8 +2,14 @@
   hosts: all
   become: yes
   tasks:
-    - name: Installer git
+    - name: Installer git sur Debian/Ubuntu
       apt:
-        name:
-          - git
+        name: git
         state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Installer git sur Red Hat/CentOS
+      yum:
+        name: git
+        state: present
+      when: ansible_os_family == "RedHat"

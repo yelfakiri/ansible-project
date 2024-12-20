@@ -1,9 +1,19 @@
 - name: Installer curl
   hosts: all
-  become: yes 
+  become: yes
   tasks:
-    - name: Installer curl
+    # Installer curl sur Debian/Ubuntu
+    - name: Installer curl sur Debian/Ubuntu
       apt:
         name:
           - curl
         state: present
+      when: ansible_os_family == "Debian"
+
+    # Installer curl sur CentOS/Red Hat
+    - name: Installer curl sur CentOS/Red Hat
+      yum:
+        name:
+          - curl
+        state: present
+      when: ansible_os_family == "RedHat"

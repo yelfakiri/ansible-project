@@ -1,14 +1,23 @@
-- name: Installer git et
+- name: Installer et configurer Nginx
   hosts: all
   become: yes
   tasks:
-    - name: Installer Nginx
+    # Installation de Nginx pour Debian/Ubuntu
+    - name: Installer Nginx sur Debian/Ubuntu
       apt:
         name: nginx
         state: present
+      when: ansible_os_family == "Debian"
+
+    # Installation de Nginx pour Red Hat/CentOS
+    - name: Installer Nginx sur Red Hat/CentOS
+      yum:
+        name: nginx
+        state: present
+      when: ansible_os_family == "RedHat"
 
     # Activer et démarrer Nginx
-    - name: Activer et démarrer le service Nginx
+    - name: Activer et démarrer Nginx
       service:
         name: nginx
         state: started

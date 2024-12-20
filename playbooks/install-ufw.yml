@@ -1,12 +1,15 @@
-- name: Installer ufw et configuration
+- name: Installer UFW ou configurer firewalld
   hosts: all
   become: yes
   tasks:
-    - name: Installer ufw
+    # Installer et configurer UFW pour Debian/Ubuntu
+    - name: Installer UFW sur Debian/Ubuntu
       apt:
         name:
           - ufw
         state: present
+      when: ansible_os_family == "Debian"
+
     - name: Configurer UFW pour autorisation de ports
       ufw:
         rule: allow
@@ -15,6 +18,43 @@
       loop:
         - 22 # autorise le port 22 SSH
         - 80 # autorise le port 80 HTTP
+      when: ansible_os_family == "Debian"
+
     - name: Activer UFW
       ufw:
         state: enabled
+      when: ansible_os_family == "Debian"
+
+    # Installer et configurer firewalld pour CentOS/RedHat
+    - name: Installer firewalld sur CentOS/RedHat
+      yum:
+        name:
+          - firewalld
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Démarrer et activer firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Configurer firewalld pour autorisation de ports
+      firewalld:
+        service: ssh
+        state: enabled
+        immediate: yes
+        permanent: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Configurer firewalld pour HTTP
+      firewalld:
+        port: "{{ item }}/tcp"
+        state: enabled
+        immediate: yes
+        permanent: yes
+      loop:
+        - 22 # autorise le port 22 SSH
+        - 80 # autorise le port 80 HTTP
+      when: ansible_os_family == "RedHat"

@@ -13,7 +13,6 @@
       git:
         repo: https://github.com/nbittich/grafana-example.git
         dest: /home/ubuntu/docker/grafana-example
-        version: main  # Branche à cloner
         force: yes  # Remplace si le contenu existe déjà
 
 # 2. Télécharger le projet JuiceShop sur MACHINE_VPS
@@ -31,5 +30,4 @@
       git:
         repo: https://github.com/yelfakiri/lab_pentest.git
         dest: /home/ubuntu/docker/lab_pentest
-        version: main  # Branche à cloner
         force: yes  # Remplace si le contenu existe déjà
