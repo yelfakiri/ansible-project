@@ -1,0 +1,35 @@
+# 1. Télécharger le projet Grafana sur MACHINE_VAGRANT
+- name: Télécharger le projet Grafana
+  hosts: MACHINE_VAGRANT
+  become: yes
+  tasks:
+    - name: Créer le répertoire docker si nécessaire
+      file:
+        path: /home/ubuntu/docker
+        state: directory
+        mode: '0755'
+
+    - name: Télécharger les fichiers nécessaires pour le projet Grafana depuis un dépôt Git
+      git:
+        repo: https://github.com/nbittich/grafana-example.git
+        dest: /home/ubuntu/docker/grafana-example
+        version: main  # Branche à cloner
+        force: yes  # Remplace si le contenu existe déjà
+
+# 2. Télécharger le projet JuiceShop sur MACHINE_VPS
+- name: Télécharger le projet JuiceShop
+  hosts: MACHINE_VPS
+  become: yes
+  tasks:
+    - name: Créer le répertoire docker si nécessaire
+      file:
+        path: /home/ubuntu/docker
+        state: directory
+        mode: '0755'
+
+    - name: Télécharger les fichiers nécessaires pour le projet JuiceShop depuis un dépôt Git
+      git:
+        repo: https://github.com/yelfakiri/lab_pentest.git
+        dest: /home/ubuntu/docker/lab_pentest
+        version: main  # Branche à cloner
+        force: yes  # Remplace si le contenu existe déjà

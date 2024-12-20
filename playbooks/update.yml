@@ -1,6 +1,6 @@
 - name: Mettre à jour les paquets du système
   hosts: all
-  become: yes  # S'exécute avec les privilèges root
+  become: yes 
   tasks:
     - name: Mettre à jour les paquets
       apt:

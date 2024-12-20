@@ -1,6 +1,6 @@
 - name: Installer curl
   hosts: all
-  become: yes  # S'exécute avec les privilèges root
+  become: yes 
   tasks:
     - name: Installer curl
       apt:

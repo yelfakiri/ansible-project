@@ -1,0 +1,9 @@
+- name: Installer docker et configuration
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installer Docker
+      shell: |
+        curl -fsSL https://get.docker.com | sh
+        systemctl start docker
+        systemctl enable docker

@@ -3,7 +3,8 @@
 - import_playbook: playbooks/install-curl.yml
 - import_playbook: playbooks/install-ufw.yml
 - import_playbook: playbooks/install-git.yml
-- import_playbook: playbooks/install-docker-grafana.yml
-- import_playbook: playbooks/install-docker-juiceshop.yml
-- import_playbook: playbooks/install-nginx-vps.yml
-- import_playbook: playbooks/install-nginx-vagrant.yml
+- import_playbook: playbooks/install-docker.yml
+- import_playbook: playbooks/clone_project_docker.yml
+# - import_playbook: playbooks/docker_up.yml
+- import_playbook: playbooks/install-nginx.yml
+- import_playbook: playbooks/config-nginx.yml

@@ -1,0 +1,15 @@
+- name: Installer git et
+  hosts: all
+  become: yes
+  tasks:
+    - name: Installer Nginx
+      apt:
+        name: nginx
+        state: present
+
+    # Activer et démarrer Nginx
+    - name: Activer et démarrer le service Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes

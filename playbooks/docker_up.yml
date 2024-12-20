@@ -1,0 +1,35 @@
+# Déployer le docker-compose projet Grafana
+- name: Déployer le projet Grafana
+  hosts: MACHINE_VAGRANT
+  become: yes
+  tasks:
+
+    # Lancer le docker-compose dans le répertoire spécifié
+    - name: Lancer le docker-compose pour Grafana
+      shell: docker compose up -d
+      args:
+        chdir: /home/ubuntu/docker/grafana-example
+      register: docker_output
+
+    # Vérifier la sortie de la commande docker-compose
+    - name: Afficher la sortie du docker-compose
+      debug:
+        var: docker_output.stdout
+
+# Déployer le docker-compose projet Juice Shop
+- name: Déployer le projet Juice Shop
+  hosts: MACHINE_VPS
+  become: yes
+  tasks:
+
+    # Lancer le docker-compose dans le répertoire spécifié
+    - name: Lancer le docker-compose pour Juice Shop
+      shell: docker compose up -d
+      args:
+        chdir: /home/ubuntu/docker/lab_pentest
+      register: docker_output
+
+    # Vérifier la sortie de la commande docker-compose
+    - name: Afficher la sortie du docker-compose
+      debug:
+        var: docker_output.stdout
