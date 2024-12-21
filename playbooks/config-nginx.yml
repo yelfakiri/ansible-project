@@ -1,69 +1,98 @@
-# Configuration de nginx sur la machine Vagrant
-- name: Configuration de nginx sur la machine Vagrant
+### Configuration de nginx sur la machine Vagrant (Ubuntu/Debian)
+- name: Configuration de Nginx sur la machine Vagrant
   hosts: MACHINE_VAGRANT
   become: yes
   tasks:
+    # Supprimer la configuration par défaut de Nginx
+    - name: Supprimer la configuration par défaut de Nginx
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
 
-    # Ajouter une configuration personnalisée
-    - name: Copier le fichier de configuration Nginx
-      copy:
-        src: /Users/yelfakiri/Project/Ansible/ansible-project/conf-nginx-grafana  # Remplace par le chemin de ta configuration locale
-        dest: /etc/nginx/sites-available/grafana # Destination sur le serveur
+    # Créer le fichier de configuration pour Grafana
+    - name: Créer le fichier de configuration pour Grafana
+      file:
+        path: /etc/nginx/sites-available/grafana
+        state: touch
+        mode: '0644'
 
-    # Créer un lien symbolique pour activer la configuration
-    - name: Créer un lien symbolique pour la configuration Grafana
+    # Ajouter ou remplacer la configuration Nginx pour Grafana
+    - name: Ajouter la configuration Nginx pour Grafana
+      blockinfile:
+        path: /etc/nginx/sites-available/grafana
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          server {
+              listen 80;
+              server_name {{ inventory_hostname }};
+
+              location / {
+                  proxy_pass http://127.0.0.1:3000;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+    # Créer un lien symbolique pour activer la configuration Grafana
+    - name: Activer la configuration Grafana
       file:
         src: /etc/nginx/sites-available/grafana
         dest: /etc/nginx/sites-enabled/grafana
         state: link
-      notify:
-        - Reload Nginx
-
-  handlers:
-    - name: Reload Nginx
-      service:
-        name: nginx
-        state: reloaded
-
-# Configuration de nginx sur la machine VPS (Red Hat/CentOS)
-- name: Configuration de nginx sur la machine VPS
-  hosts: MACHINE_VPS
-  become: yes
-  tasks:
-    # Créer les répertoires nécessaires pour les fichiers de configuration
-    - name: Créer le répertoire /etc/nginx/sites-available
-      file:
-        path: /etc/nginx/sites-available
-        state: directory
-        mode: '0755'
-
-    - name: Créer le répertoire /etc/nginx/sites-enabled
-      file:
-        path: /etc/nginx/sites-enabled
-        state: directory
-        mode: '0755'
-
-    # Ajouter une configuration personnalisée
-    - name: Copier le fichier de configuration Nginx
-      copy:
-        src: /Users/yelfakiri/Project/Ansible/ansible-project/conf-nginx-juiceshop  # Remplace par le chemin de ta configuration locale
-        dest: /etc/nginx/sites-available/juiceshop # Destination sur le serveur
-
-    # Créer un lien symbolique pour activer la configuration
-    - name: Créer un lien symbolique pour la configuration JuiceShop
-      file:
-        src: /etc/nginx/sites-available/juiceshop
-        dest: /etc/nginx/sites-enabled/juiceshop
-        state: link
-      notify:
-        - Reload Nginx
 
     # Vérifier la syntaxe de Nginx
     - name: Vérifier la configuration Nginx
       command: nginx -t
 
-  handlers:
-    - name: Reload Nginx
+    # Redémarrer Nginx
+    - name: Redémarrer le service Nginx
       service:
         name: nginx
-        state: reloaded
+        state: restarted
+
+### Configuration de Nginx sur la machine VPS (Red Hat/CentOS)
+- name: Configuration dynamique de Nginx sur la machine VPS
+  hosts: MACHINE_VPS
+  become: yes
+  tasks:
+    - name: Sauvegarder et désactiver la configuration par défaut de Nginx
+      command: mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
+      args:
+        removes: /etc/nginx/conf.d/default.conf
+
+    - name: Créer le fichier de configuration pour JuiceShop
+      file:
+        path: /etc/nginx/conf.d/juice.conf
+        state: touch
+        mode: '0644'
+
+    # Ajouter ou remplacer la configuration Nginx pour JuiceShop
+    - name: Ajouter la configuration Nginx pour JuiceShop
+      blockinfile:
+        path: /etc/nginx/conf.d/juice.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        block: |
+          server {
+              listen 80;
+              server_name {{ inventory_hostname }};
+
+              location / {
+                  proxy_pass http://127.0.0.1:3000;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+    # Vérifier la syntaxe de Nginx
+    - name: Vérifier la configuration Nginx
+      command: nginx -t
+
+    # Redémarrer Nginx
+    - name: Redémarrer le service Nginx
+      service:
+        name: nginx
+        state: restarted

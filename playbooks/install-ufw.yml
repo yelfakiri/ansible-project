@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   tasks:
-    # Installer et configurer UFW pour Debian/Ubuntu
+### Installer et configurer UFW pour Debian/Ubuntu
     - name: Installer UFW sur Debian/Ubuntu
       apt:
         name:
@@ -25,7 +25,7 @@
         state: enabled
       when: ansible_os_family == "Debian"
 
-    # Installer et configurer firewalld pour CentOS/RedHat
+### Installer et configurer firewalld pour CentOS/RedHat
     - name: Installer firewalld sur CentOS/RedHat
       yum:
         name:

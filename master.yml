@@ -1,10 +1,16 @@
+## Les imports sont classés par ordre logique de déploiement
+
+# 1. Mise à jour du système et préparation des dépendances
 - import_playbook: playbooks/update.yml
+# 2. Installation des outils essentiels comme Python, curl, UFW, git et Docker
 - import_playbook: playbooks/install-python.yml
 - import_playbook: playbooks/install-curl.yml
 - import_playbook: playbooks/install-ufw.yml
 - import_playbook: playbooks/install-git.yml
 - import_playbook: playbooks/install-docker.yml
+# 3. Clonage des projets nécessaires et lancement des conteneurs Docker
 - import_playbook: playbooks/clone_project_docker.yml
-# - import_playbook: playbooks/docker_up.yml
+- import_playbook: playbooks/docker_up.yml
+# 4. Installation et configuration de Nginx pour gérer les reverse proxies
 - import_playbook: playbooks/install-nginx.yml
 - import_playbook: playbooks/config-nginx.yml

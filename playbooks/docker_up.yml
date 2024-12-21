@@ -1,4 +1,4 @@
-# Déployer le docker-compose projet Grafana
+### Déployer le docker-compose projet Grafana sur MACHINE_VAGRANT
 - name: Déployer le projet Grafana
   hosts: MACHINE_VAGRANT
   become: yes
@@ -6,7 +6,7 @@
 
     # Lancer le docker-compose dans le répertoire spécifié
     - name: Lancer le docker-compose pour Grafana
-      shell: docker compose up -d
+      shell: sudo docker compose up -d
       args:
         chdir: /home/ubuntu/docker/grafana-example
       register: docker_output
@@ -16,7 +16,7 @@
       debug:
         var: docker_output.stdout
 
-# Déployer le docker-compose projet Juice Shop
+### Déployer le docker-compose projet Juice Shop sur MACHINE_VPS
 - name: Déployer le projet Juice Shop
   hosts: MACHINE_VPS
   become: yes
@@ -24,9 +24,9 @@
 
     # Lancer le docker-compose dans le répertoire spécifié
     - name: Lancer le docker-compose pour Juice Shop
-      shell: docker compose up -d
+      shell: sudo docker compose up -d
       args:
-        chdir: /home/ubuntu/docker/lab_pentest
+        chdir: /home/centos/docker/lab_pentest
       register: docker_output
 
     # Vérifier la sortie de la commande docker-compose
