@@ -1,15 +1,12 @@
 # Projet Ansible : Déploiement de JuiceShop et Grafana
+## Objectif
+Déployer JuiceShop sur un VPS (CentOS) et Grafana sur une machine Vagrant (Ubuntu), avec configuration automatique de Nginx comme reverse proxy.
 
-Ce projet Ansible a pour objectif de déployer des applications et de configurer un serveur **Nginx** sur deux environnements distincts : 
-
-1. **VPS (sous CentOS)** : **JuiceShop**.
-     
-2. **Machine Vagrant (sous Ubuntu)** : **Grafana**.
-
-## Fonctionnalités
-- Installation automatisée de Docker et des dépendances nécessaires.
-- Configuration de **Nginx** comme reverse proxy redirigeant le port 80 vers le port 3000 de Grafana et de JuiceShop, cela permet de contourner les limitations des iptables de Docker.
-- Déploiement des applications JuiceShop et Grafana via Docker Compose.
+## Étapes principales
+1.	Installation des outils : Docker et dépendances.
+2.	Déploiement : Applications via Docker Compose.
+3.	Configuration de Nginx : Redirection du port 80 vers 3000 pour chaque machine.
+4.	Inventaire dynamique : Utilisation de inventory.ini pour les noms d’hôtes.
 
 ## Prérequis
 - **Ansible** installé sur la machine de contrôle.
@@ -17,16 +14,14 @@ Ce projet Ansible a pour objectif de déployer des applications et de configurer
 - Clés SSH ajoutées aux machines distantes pour permettre une connexion sécurisée.
 
 ## Instructions
-1. Mettre à jour le fichier `inventory.ini` pour inclure les adresses IP des machines cibles (VPS et Vagrant).
+1. Mettre à jour le fichier `inventory.ini` pour inclure les adresses IPs des machines cibles.
 2. Lancer le playbook maître qui orchestre les différentes étapes :
    ```bash
    ansible-playbook -i inventory.ini master.yml
    ```
    
 ## Résultat attendu
-
-- **JuiceShop** :  
-  Accessible via l’adresse IP du **VPS** sur le port **80**.
-
-- **Grafana** :  
-  Accessible via l’adresse IP de la **machine Vagrant** sur le port **80**.
+- JuiceShop : Accessible sur l’IP du VPS via le port 80.
+     - http://<IP_du_VPS>
+- Grafana : Accessible sur l’IP de la machine Vagrant via le port 80.
+     - http://<IP_de_Vagrant> 
